@@ -2,6 +2,7 @@ const video = document.getElementById('webcam');
 const liveView = document.getElementById('liveView');
 const demosSection = document.getElementById('demos');
 const enableWebcamButton = document.getElementById('webcamButton');
+const synth = window.speechSynthesis;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
@@ -64,7 +65,7 @@ cocoSsd.load().then(function (loadedModel) {
 
 
 var children = [];
-
+//let c = 0
 function predictWebcam() {
   // Now let's start classifying a frame in the stream.
   model.detect(video).then(function (predictions) {
@@ -74,15 +75,40 @@ function predictWebcam() {
     }
     children.splice(0);
     
+
+
+//const utterance = new SpeechSynthesisUtterance('');
+    
+//const utterance = new SpeechSynthesisUtterance('Hello World');
+//synth.speak(utterance);
     // Now lets loop through predictions and draw them to the live view if
     // they have a high confidence score.
+
+
     for (let n = 0; n < predictions.length; n++) {
       // If we are over 66% sure we are sure we classified it right, draw it!
       if (predictions[n].score > 0.66) {
         const p = document.createElement('p');
-        p.innerText = predictions[n].class  + ' - with ' 
+        p.innerText = predictions[n].class  + ' - with ' ////////
             + Math.round(parseFloat(predictions[n].score) * 100) 
             + '% confidence.';
+
+
+
+            //const utterance = new SpeechSynthesisUtterance(predictions[n].class);///////////////////
+            //const utterance = new SpeechSynthesisUtterance('poda myre');///////////////////
+            if ((synth.speaking) != true) {
+              const utterance = new SpeechSynthesisUtterance(predictions[n].class);///////////////////
+              synth.speak(utterance);
+              console.log(predictions[n].class)
+            //console.log('cancelled')  
+            //synth.cancel();
+            //c = 0
+            }
+            //c++
+            
+
+
         p.style = 'margin-left: ' + predictions[n].bbox[0] + 'px; margin-top: '
             + (predictions[n].bbox[1] - 10) + 'px; width: ' 
             + (predictions[n].bbox[2] - 10) + 'px; top: 0; left: 0;';
